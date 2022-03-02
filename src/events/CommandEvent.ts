@@ -31,12 +31,12 @@ module.exports = {
 				});
 				break;
 			case "tos":
-				await cooldownIt(message, 'siteCommandCooldown', 3500, '⌛', async () => {
+				await cooldownIt(message, 'tosCommandCooldown', 3500, '⌛', async () => {
 					await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
 				});
 				break;
 			case "privacy":
-				await cooldownIt(message, 'siteCommandCooldown', 3500, '⌛', async () => {
+				await cooldownIt(message, 'privacyCommandCooldown', 3500, '⌛', async () => {
 					await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
 				});
 				break;
