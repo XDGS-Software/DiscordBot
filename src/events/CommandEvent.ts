@@ -2,11 +2,14 @@ import { Message } from "discord.js";
 
 let { prefix } = process.env;
 
-let cooldown = {};
+let cooldown = [];
 async function cooldownIt(message: Message, name: string, ms: number, reaction: string, callback: Function) {
 	if((cooldown[`${message.author.id}-${name}`]||null)==null){
 		callback();
-		setTimeout(()=>{cooldown[`${message.author.id}-${name}`]=null;},ms);
+		setTimeout(()=>{
+			cooldown[`${message.author.id}-${name}`]=null;
+			cooldown=cooldown.filter((value)=>{return value != null;}); // cleanup null in cooldown
+		},ms);
 		cooldown[`${message.author.id}-${name}`]=true;
 	}else{await message.react(reaction);}
 }
@@ -24,6 +27,7 @@ module.exports = {
 		switch (command) {
 			case "test":
         		await message.reply('This is a test command.');
+				console.log(cooldown);
 				break;
 			case "site":
 				await cooldownIt(message, 'siteCommandCooldown', 3500, '⌛', async () => {
