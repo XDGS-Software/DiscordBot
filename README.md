@@ -6,7 +6,7 @@ token="YourBotTokenHere"
 prefix="!"
 ```
 
-make sure you installed yarn and then run the command in a new command prompt:
+make sure you installed [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable) and then run the command in a new command prompt:
 
 ``yarn run build``
 
