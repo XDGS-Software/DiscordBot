@@ -27,7 +27,6 @@ module.exports = {
 		switch (command) {
 			case "test":
         		await message.reply('This is a test command.');
-				console.log(cooldown);
 				break;
 			case "site":
 				await cooldownIt(message, 'siteCommandCooldown', 3500, '⌛', async () => {
