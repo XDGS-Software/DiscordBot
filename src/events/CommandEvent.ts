@@ -5,7 +5,7 @@ let { prefix } = process.env;
 module.exports = {
 	name: 'messageCreate',
 	once: false,
-	execute(message: Message) {
+	async execute(message: Message) {
 		if (message.author.bot) return;
 		if (!message.content.startsWith(prefix)) return;
 
@@ -14,7 +14,10 @@ module.exports = {
 
 		switch (command) {
 			case "test":
-        		message.reply('Hello, World!');
+        		await message.reply('This is a test command.');
+				break;
+			case "site":
+				await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
 				break;
 		}
 	},

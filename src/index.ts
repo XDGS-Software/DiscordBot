@@ -32,9 +32,9 @@ const eventFiles = fs.readdirSync(__dirname + '/events').filter(file => file.end
 for (const file of eventFiles) {
 	const event = require(__dirname + `/events/${file}`);
 	if (event.once) {
-		bot.once(event.name, (...args) => event.execute(...args));
+		bot.once(event.name, async (...args) => await event.execute(...args));
 	} else {
-		bot.on(event.name, (...args) => event.execute(...args));
+		bot.on(event.name, async (...args) => await event.execute(...args));
 	}
 }
 

@@ -13,6 +13,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "start": "node ."
+    "start": "node .",
+    "live": "nodemon ."
   }
 }
