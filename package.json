@@ -7,6 +7,10 @@
   "author": "GStudiosX2",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^13.6.0"
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  },
+  "scripts": {
+    "start": "node ."
   }
 }
