@@ -2,7 +2,7 @@
   "name": "discord-bot",
   "version": "1.0.0",
   "description": "DiscordBot for XDGS-Software discord server.",
-  "main": "index.js",
+  "main": "build/index.js",
   "repository": "https://github.com/XDGS-Software/DiscordBot.git",
   "author": "GStudiosX2",
   "license": "MIT",
@@ -11,6 +11,8 @@
     "dotenv": "^16.0.0"
   },
   "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc",
     "start": "node ."
   }
 }

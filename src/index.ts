@@ -1,7 +1,9 @@
 require('dotenv').config();
 
+let fs = require('fs');
 let { token } = process.env;
-let { Client, Intents } = require('discord.js');
+
+let Discord, { Client, Intents } = require('discord.js');
 
 let bot = new Client({
     intents: [
@@ -21,8 +23,19 @@ let bot = new Client({
     ]
 });
 
-bot.once('ready', () => {
-    console.log(`${bot.user.tag} has started up.`);
+bot.once('ready', (client) => {
+    console.log(`Logged into '${client.user.tag}'.`);
 });
+
+const eventFiles = fs.readdirSync(__dirname + '/events').filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+
+for (const file of eventFiles) {
+	const event = require(__dirname + `/events/${file}`);
+	if (event.once) {
+		bot.once(event.name, (...args) => event.execute(...args));
+	} else {
+		bot.on(event.name, (...args) => event.execute(...args));
+	}
+}
 
 bot.login(token);
