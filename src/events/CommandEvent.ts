@@ -18,7 +18,7 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 let commands = [
 	{
 		name: "site",
-		async execute(message: Message, args: string[], cooldownIt: Function) {
+		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
 			await cooldownIt(message, 'siteCommandCooldown', null, null, async () => {
 				await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
 			});
@@ -26,7 +26,7 @@ let commands = [
 	},
 	{
 		name: "tos",
-		async execute(message: Message, args: string[], cooldownIt: Function) {
+		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
 			await cooldownIt(message, 'tosCommandCooldown', null, null, async () => {
 				await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
 			});
@@ -34,7 +34,7 @@ let commands = [
 	},
 	{
 		name: "privacy",
-		async execute(message: Message, args: string[], cooldownIt: Function) {
+		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
 			await cooldownIt(message, 'privacyCommandCooldown', null, null, async () => {
 				await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
 			});
@@ -42,7 +42,7 @@ let commands = [
 	},
 	{
 		name: "help",
-		async execute(message: Message, args: string[], cooldownIt: Function) {
+		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
 			await message.reply("Help:\n" + 
 			commands.map((value) => { return value.name; })
 			.filter((value) => {
@@ -73,7 +73,7 @@ module.exports = {
 		let cmds = commands.filter((value) => { return value.name.match(command); });
 
 		if (cmds.length > 0) {
-			await cmds[0].execute(message, args, cooldownIt);
+			await cmds[0].execute(message, command, args, cooldownIt);
 		}
 	},
 };

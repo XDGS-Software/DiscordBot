@@ -17,6 +17,8 @@ prefix="!"
 command_cooldown_reaction="⌛"
 command_cooldown=3500
 
+embed_color="#233ead"
+
 status="dnd"
 status_activity="everyone"
 status_activity_type="WATCHING"
