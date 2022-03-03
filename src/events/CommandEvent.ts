@@ -17,30 +17,6 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 
 let commands = [
 	{
-		name: "site",
-		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
-			await cooldownIt(message, 'siteCommandCooldown', null, null, async () => {
-				await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
-			});
-		}
-	},
-	{
-		name: "tos",
-		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
-			await cooldownIt(message, 'tosCommandCooldown', null, null, async () => {
-				await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
-			});
-		}
-	},
-	{
-		name: "privacy",
-		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
-			await cooldownIt(message, 'privacyCommandCooldown', null, null, async () => {
-				await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
-			});
-		}
-	},
-	{
 		name: "help",
 		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
 			await message.reply("Help:\n" + 
@@ -53,7 +29,8 @@ let commands = [
 ];
 
 if (fs.existsSync(__dirname + '/commands')) {
-	const commandFiles = fs.readdirSync(__dirname + '/commands').filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+	const commandFiles = fs.readdirSync(__dirname + '/commands').filter(file => file.endsWith('.js') 
+	|| file.endsWith('.ts'));
 	for (const file of commandFiles) {
 		const command = require(__dirname + `/commands/${file}`);
 		commands.push(command);

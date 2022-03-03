@@ -41,7 +41,6 @@ function toActivityTypes(type: string) : ExcludeEnum<typeof ActivityTypes, "CUST
 
 bot.once('ready', (client) => {
     console.log(`Logged into '${client.user.tag}'.`);
-
     bot.user.setPresence({
         status: toPresenceStatus(status),
         activities: [
