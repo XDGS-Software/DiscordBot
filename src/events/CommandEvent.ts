@@ -16,18 +16,24 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 	}else{await message.react(reaction||command_cooldown_reaction);}
 }
 
-let commands = [
-	{
-		name: "help",
-		async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
-			await message.reply("Help:\n" + 
-			commands.map((value) => { return value.name; })
-			.filter((value) => {
-				return args.length == 0 || (args.length > 0 && value.includes(args[0]));
-			}).join('\n'));
+module.exports = {
+	commands: [],
+	name: 'messageCreate',
+	once: false,
+	async execute(message: Message) {
+		if (message.author.bot) return;
+		if (!message.content.startsWith(prefix)) return;
+
+		let args = message.content.split(" ");
+		let command = args.shift().replace(prefix, "");
+
+		let cmds = module.exports.commands.filter((value) => { return value.name.match(command); });
+
+		if (cmds.length > 0) {
+			await cmds[0].execute(message, command, args, cooldownIt);
 		}
 	},
-];
+};
 
 function loadCommands(dir) {
 	if (fs.existsSync(__dirname + dir)) {
@@ -39,28 +45,10 @@ function loadCommands(dir) {
 				loadCommands(`${dir}/${file}/`);
 			} else {
 				const command = require(__dirname + `${dir}/${file}`);
-				commands.push(command);
+				module.exports.commands.push(command);
 			}
 		}
 	}
 }
 
 loadCommands('/commands');
-
-module.exports = {
-	name: 'messageCreate',
-	once: false,
-	async execute(message: Message) {
-		if (message.author.bot) return;
-		if (!message.content.startsWith(prefix)) return;
-
-		let args = message.content.split(" ");
-		let command = args.shift().replace(prefix, "");
-
-		let cmds = commands.filter((value) => { return value.name.match(command); });
-
-		if (cmds.length > 0) {
-			await cmds[0].execute(message, command, args, cooldownIt);
-		}
-	},
-};

@@ -22,6 +22,8 @@ if (t !== undefined) {
 
 module.exports = {
     name: "(tag|tags)",
+    arguments: ["(create <tag> <description>/delete <tag>/refresh)"],
+    description: "create, view, delete, refresh tags",
     async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
         switch (command) {
             case "tag":
