@@ -14,6 +14,49 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 	}else{await message.react(reaction||command_cooldown_reaction);}
 }
 
+let commands = [
+	{
+		name: "test",
+		async execute(message: Message, args: string[]) {
+			await message.reply('This is a test command.');
+		}
+	},
+	{
+		name: "site",
+		async execute(message: Message, args: string[]) {
+			await cooldownIt(message, 'siteCommandCooldown', null, null, async () => {
+				await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
+			});
+		}
+	},
+	{
+		name: "tos",
+		async execute(message: Message, args: string[]) {
+			await cooldownIt(message, 'tosCommandCooldown', null, null, async () => {
+				await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
+			});
+		}
+	},
+	{
+		name: "privacy",
+		async execute(message: Message, args: string[]) {
+			await cooldownIt(message, 'privacyCommandCooldown', null, null, async () => {
+				await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
+			});
+		}
+	},
+	{
+		name: "help",
+		async execute(message: Message, args: string[]) {
+			await message.reply("Help:\n" + 
+			commands.map((value) => { return value.name; })
+			.filter((value) => {
+				return args.length == 0 || (args.length > 0 && value.includes(args[0]));
+			}).join('\n'));
+		}
+	},
+];
+
 module.exports = {
 	name: 'messageCreate',
 	once: false,
@@ -24,25 +67,10 @@ module.exports = {
 		let args = message.content.split(" ");
 		let command = args.shift().replace(prefix, "");
 
-		switch (command) {
-			case "test":
-        		await message.reply('This is a test command.');
-				break;
-			case "site":
-				await cooldownIt(message, 'siteCommandCooldown', null, null, async () => {
-					await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
-				});
-				break;
-			case "tos":
-				await cooldownIt(message, 'tosCommandCooldown', null, null, async () => {
-					await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
-				});
-				break;
-			case "privacy":
-				await cooldownIt(message, 'privacyCommandCooldown', null, null, async () => {
-					await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
-				});
-				break;
+		let cmds = commands.filter((value) => { return value.name == command; });
+
+		if (cmds.length > 0) {
+			await cmds[0].execute(message, args);
 		}
 	},
 };
