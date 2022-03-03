@@ -70,7 +70,7 @@ module.exports = {
 		let args = message.content.split(" ");
 		let command = args.shift().replace(prefix, "");
 
-		let cmds = commands.filter((value) => { return value.name == command; });
+		let cmds = commands.filter((value) => { return value.name.match(command); });
 
 		if (cmds.length > 0) {
 			await cmds[0].execute(message, args, cooldownIt);
