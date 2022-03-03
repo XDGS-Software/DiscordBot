@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 
+let fs = require('fs');
 let { prefix, command_cooldown, command_cooldown_reaction } = process.env;
 
 let cooldown = [];
@@ -15,12 +16,6 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 }
 
 let commands = [
-	{
-		name: "test",
-		async execute(message: Message, args: string[]) {
-			await message.reply('This is a test command.');
-		}
-	},
 	{
 		name: "site",
 		async execute(message: Message, args: string[]) {
@@ -56,6 +51,14 @@ let commands = [
 		}
 	},
 ];
+
+if (fs.existsSync(__dirname + '/commands')) {
+	const commandFiles = fs.readdirSync(__dirname + '/commands').filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+	for (const file of commandFiles) {
+		const command = require(__dirname + `/commands/${file}`);
+		commands.push(command);
+	}
+}
 
 module.exports = {
 	name: 'messageCreate',
