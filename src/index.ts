@@ -1,11 +1,11 @@
+import { Client, ClientPresenceStatus, Intents } from "discord.js";
+
 require('dotenv').config();
 
 let fs = require('fs');
-let { token } = process.env;
+let { token, status, status_activity, status_activity_type } = process.env;
 
-let Discord, { Client, Intents } = require('discord.js');
-
-let bot = new Client({
+let bot: Client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.DIRECT_MESSAGES,
@@ -23,8 +23,29 @@ let bot = new Client({
     ]
 });
 
+function toPresenceStatus(status: string) : ClientPresenceStatus {
+    return status == 'online' ? 
+        'online' : status == 'dnd' ?
+        'dnd' : status == 'idle' ?
+        'idle' : null;
+}
+
 bot.once('ready', (client) => {
     console.log(`Logged into '${client.user.tag}'.`);
+
+    bot.user.setPresence({
+        status: toPresenceStatus(status),
+        activities: [
+            {
+                name: status_activity,
+                type: status_activity_type 
+                
+                // idk what to do about this error it seems to work when its compiled to js 
+                // but it erorrs in ts? 
+                // i guess it aint much of a problem rn
+            }
+        ]
+    });
 });
 
 const eventFiles = fs.readdirSync(__dirname + '/events').filter(file => file.endsWith('.js') || file.endsWith('.ts'));
