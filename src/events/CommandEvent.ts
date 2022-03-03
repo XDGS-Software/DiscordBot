@@ -28,14 +28,23 @@ let commands = [
 	},
 ];
 
-if (fs.existsSync(__dirname + '/commands')) {
-	const commandFiles = fs.readdirSync(__dirname + '/commands').filter(file => file.endsWith('.js') 
-	|| file.endsWith('.ts'));
-	for (const file of commandFiles) {
-		const command = require(__dirname + `/commands/${file}`);
-		commands.push(command);
+function loadCommands(dir) {
+	if (fs.existsSync(__dirname + dir)) {
+		const commandFiles = fs.readdirSync(__dirname + dir).filter(file => file.endsWith('.js') 
+		|| file.endsWith('.ts') || fs.statSync(__dirname + dir + "/" + file).isDirectory());
+		for (const file of commandFiles) {
+			let stat = fs.statSync(__dirname + `${dir}/${file}`);
+			if (stat.isDirectory()) {
+				loadCommands(`${dir}/${file}/`);
+			} else {
+				const command = require(__dirname + `${dir}/${file}`);
+				commands.push(command);
+			}
+		}
 	}
 }
+
+loadCommands('/commands');
 
 module.exports = {
 	name: 'messageCreate',
