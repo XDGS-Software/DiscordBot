@@ -5,13 +5,14 @@ let { prefix, command_cooldown, command_cooldown_reaction } = process.env;
 
 let cooldown = [];
 async function cooldownIt(message: Message, name: string, ms: number, reaction: string, callback: Function) {
-	if((cooldown[`${message.author.id}-${name}`]||null)==null){
+	let id = `${message.guild.id}-${message.author.id}-${name}`;
+	if((cooldown[id]||null)==null){
 		callback();
 		setTimeout(()=>{
-			cooldown[`${message.author.id}-${name}`]=null;
+			cooldown[id]=null;
 			cooldown=cooldown.filter((value)=>{return value != null;});
 		},(ms||Number(command_cooldown)));
-		cooldown[`${message.author.id}-${name}`]=true;
+		cooldown[id]=true;
 	}else{await message.react(reaction||command_cooldown_reaction);}
 }
 
