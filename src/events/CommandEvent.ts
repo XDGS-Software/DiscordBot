@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 
-let { prefix } = process.env;
+let { prefix, command_cooldown, command_cooldown_reaction } = process.env;
 
 let cooldown = [];
 async function cooldownIt(message: Message, name: string, ms: number, reaction: string, callback: Function) {
@@ -8,10 +8,10 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 		callback();
 		setTimeout(()=>{
 			cooldown[`${message.author.id}-${name}`]=null;
-			cooldown=cooldown.filter((value)=>{return value != null;}); // cleanup null in cooldown
-		},ms);
+			cooldown=cooldown.filter((value)=>{return value != null;});
+		},(ms||Number(command_cooldown)));
 		cooldown[`${message.author.id}-${name}`]=true;
-	}else{await message.react(reaction);}
+	}else{await message.react(reaction||command_cooldown_reaction);}
 }
 
 module.exports = {
@@ -29,17 +29,17 @@ module.exports = {
         		await message.reply('This is a test command.');
 				break;
 			case "site":
-				await cooldownIt(message, 'siteCommandCooldown', 3500, '⌛', async () => {
+				await cooldownIt(message, 'siteCommandCooldown', null, null, async () => {
 					await message.reply('Our Site: https://xdgs.gstudiosx.tk/');
 				});
 				break;
 			case "tos":
-				await cooldownIt(message, 'tosCommandCooldown', 3500, '⌛', async () => {
+				await cooldownIt(message, 'tosCommandCooldown', null, null, async () => {
 					await message.reply('Our T.O.S: https://xdgs.gstudiosx.tk/tos');
 				});
 				break;
 			case "privacy":
-				await cooldownIt(message, 'privacyCommandCooldown', 3500, '⌛', async () => {
+				await cooldownIt(message, 'privacyCommandCooldown', null, null, async () => {
 					await message.reply('Our Privacy Policy: https://xdgs.gstudiosx.tk/privacy');
 				});
 				break;
