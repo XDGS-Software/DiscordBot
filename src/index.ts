@@ -1,4 +1,5 @@
-import { Client, ClientPresenceStatus, Intents } from "discord.js";
+import { Client, ClientPresenceStatus, ExcludeEnum, Intents } from "discord.js";
+import { ActivityTypes } from "discord.js/typings/enums";
 
 require('dotenv').config();
 
@@ -30,6 +31,14 @@ function toPresenceStatus(status: string) : ClientPresenceStatus {
         'idle' : null;
 }
 
+function toActivityTypes(type: string) : ExcludeEnum<typeof ActivityTypes, "CUSTOM"> {
+    return type == 'COMPETING' ? ActivityTypes.COMPETING :
+            type == 'LISTENING' ? ActivityTypes.LISTENING :
+            type == 'PLAYING' ? ActivityTypes.PLAYING :
+            type == 'STREAMING' ? ActivityTypes.STREAMING :
+            type == 'WATCHING' ? ActivityTypes.WATCHING : null;
+}
+
 bot.once('ready', (client) => {
     console.log(`Logged into '${client.user.tag}'.`);
 
@@ -38,11 +47,7 @@ bot.once('ready', (client) => {
         activities: [
             {
                 name: status_activity,
-                type: status_activity_type 
-                
-                // idk what to do about this error it seems to work when its compiled to js 
-                // but it erorrs in ts? 
-                // i guess it aint much of a problem rn
+                type: toActivityTypes(status_activity_type)
             }
         ]
     });

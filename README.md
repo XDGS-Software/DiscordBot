@@ -13,8 +13,13 @@ once that is done you now have to create a new file and name it ``.env`` and ins
 ```
 token="YourBotTokenHere"
 prefix="!"
+
 command_cooldown_reaction="⌛"
 command_cooldown=3500
+
+status="dnd"
+status_activity="everyone"
+status_activity_type="WATCHING"
 ```
 
 after you have created the file then run the command in a new command prompt:
