@@ -1,4 +1,4 @@
-import { HexColorString, Message, MessageEmbed } from "discord.js";
+import { HexColorString, Message, MessageEmbed, Permissions } from "discord.js";
 
 export const Tag = {name:"", description:""};
 
@@ -16,8 +16,25 @@ module.exports = {
             case "tag":
                 if (args.length > 0) {
                     if (args[0] == "delete") {
-                        // TODO: make delete
+                        if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
+                        if (args.length >= 2) {
+                            let tagName = args[1];
+
+                            if (tags.findIndex((value) => value.name === tagName) == -1) {
+                                await message.reply(`A tag with that name doesn't exist`);
+                                break;
+                            }
+
+                            tags = tags.filter((value) => value.name !== tagName);
+
+                            await message.reply(`Tag ${tagName} deleted`);
+                            break;
+                        } else {
+                            await message.reply(`${prefix}tag delete <tag>`);
+                            break;
+                        }
                     } else if (args[0] == "create") {
+                        if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
                         if (args.length >= 3) {
                             let tagName = args[1];
                             let tagDescription = args.splice(2).join(' ')
@@ -60,6 +77,10 @@ module.exports = {
                         if (tagL.length > 0) {
                             let tag: typeof Tag = tagL[0];
                             let embed = new MessageEmbed()
+                                .setFooter({ 
+                                    text: `Requested by ${message.author.tag}`, 
+                                    iconURL: message.author.avatarURL() 
+                                })
                                 .setColor(toHexColorString(embed_color))
                                 .setTitle(tag.name)
                                 .setDescription(tag.description);
