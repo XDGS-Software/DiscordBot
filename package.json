@@ -12,7 +12,7 @@
     "enmap": "^5.8.8"
   },
   "scripts": {
-    "watch": "tsc -w",
+    "watch": "tsc && tsc -w",
     "build": "tsc",
     "start": "node .",
     "live": "nodemon ."
