@@ -9,13 +9,34 @@ function toHexColorString(hex: string) : HexColorString {
     return `#${hex.replace("#", "")}`;
 }
 
+const Enmap = require('enmap');
+const DB = new Enmap({
+    name: "db", 
+    fetchAll: false
+});
+
+let t = DB.get('tags');
+if (t !== undefined) {
+    tags = t;
+}
+
 module.exports = {
     name: "(tag|tags)",
     async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
         switch (command) {
             case "tag":
                 if (args.length > 0) {
-                    if (args[0] == "delete") {
+                    if (args[0] == "refresh") {
+                        if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
+
+                        let t = DB.get('tags');
+                        if (t !== undefined) {
+                            tags = t;
+                        }
+
+                        await message.reply(`refreshed tags from db`);
+                        break;
+                    } else if (args[0] == "delete") {
                         if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
                         if (args.length >= 2) {
                             let tagName = args[1];
@@ -26,6 +47,7 @@ module.exports = {
                             }
 
                             tags = tags.filter((value) => value.name !== tagName);
+                            await DB.set('tags', tags);
 
                             await message.reply(`Tag ${tagName} deleted`);
                             break;
@@ -57,6 +79,12 @@ module.exports = {
                                     newTag.name = tagName;
                                     newTag.description = tagDescription;
                                     tags.push(newTag);
+
+                                    if (await DB.get('tags') == undefined) {
+                                        DB.set('tags', tags);
+                                    } else {
+                                        await DB.set('tags', tags);
+                                    }
 
                                     await message.reply(`Tag created with name ${newTag.name}`);
                                     break;
@@ -90,8 +118,9 @@ module.exports = {
                     }
                 } else {
                     await message.reply(`${prefix}tag (${
-                        tags.map((value) => value.name).join("|")}${
-                            tags.length > 0 ? "|" : ""}create <tag> <description>|delete <tag>)`);
+                        tags.map((value) => "**"+value.name+"**").join("|")}${
+                            message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ?
+                            (tags.length > 0 ? "|" : "") + "create <tag> <description>|delete <tag>|refresh" : ""})`);
                     break;
                 }
                 break;
