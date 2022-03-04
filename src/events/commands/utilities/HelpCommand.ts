@@ -12,16 +12,16 @@ module.exports = {
     name: "help",
     description: "a command that shows a list of commands",
     async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
-        let newCommands = CommandEvent.commands.map((value) => { return prefix + value.name
+        let commandNames = CommandEvent.commands.map((value) => { 
+            return prefix + value.name
             .replaceAll("(", "")
             .replaceAll(")", "") + (
                 value.arguments != undefined && value.arguments.length && 
                 value.arguments.length > 0 ?
                 " " + value.arguments.join(" ") : ""
-            ); });
-        newCommands = newCommands.filter((value) => {
-            return args.length == 0 || (args.length > 0 && value.includes(args[0]));
-        });
+            ); 
+        }).filter((value) => { return args.length == 0 || 
+            (args.length > 0 && value.includes(args[0])); });
 
         let embed = new MessageEmbed()
             .setFooter({ 
@@ -30,11 +30,11 @@ module.exports = {
             })
             .setColor(toHexColorString(embed_color))
             .setTitle("Help Menu");
-        for (let i = 0; i < newCommands.length; i++) {
-            const v = newCommands[i];
+            
+        for (let i = 0; i < commandNames.length; i++) {
+            const v = commandNames[i];
             const vv = v.split(" ")[0].replace(prefix, "");
             const c = CommandEvent.commands.filter((value) => value.name.includes(vv))[0];
-            console.log(c.description);
             embed.addField(v, c.description || "Description", true);
         }
         
