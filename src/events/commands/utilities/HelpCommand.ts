@@ -35,7 +35,9 @@ module.exports = {
             const v = commandNames[i];
             const vv = v.split(" ")[0].replace(prefix, "");
             const c = CommandEvent.commands.filter((value) => value.name.includes(vv))[0];
-            embed.addField(v, c.description || "Description", true);
+            const hidden = c.hideInHelp || false;
+            if (!hidden) 
+                embed.addField(v, c.description || "Description", true);
         }
         
         await message.reply({ embeds: [ embed ] });
