@@ -26,7 +26,7 @@ module.exports = {
                 }
             }
 
-            await cooldownIt(message, 'testCommandCooldown', null, null, async () => {
+            await cooldownIt(message, 'prefixCommandCooldown', null, null, async () => {
                 await message.reply(`Your command prefix: "${prefix}".`);
             });
         } else {
