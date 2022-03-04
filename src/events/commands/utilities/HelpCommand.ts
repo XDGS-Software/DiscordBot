@@ -22,6 +22,7 @@ module.exports = {
             ); 
         }).filter((value) => { return args.length == 0 || 
             (args.length > 0 && value.includes(args[0])); });
+        let currentCategories = [];
 
         let embed = new MessageEmbed()
             .setFooter({ 
@@ -36,8 +37,19 @@ module.exports = {
             const vv = v.split(" ")[0].replace(prefix, "");
             const c = CommandEvent.commands.filter((value) => value.name.includes(vv))[0];
             const hidden = c.hideInHelp || false;
-            if (!hidden) 
-                embed.addField(v, c.description || "Description", true);
+            if (!hidden) { 
+                let found = currentCategories.findIndex((value) => { return value == c.parent; });
+                if (c.parent != null || c.parent != undefined) {
+                    if (found === -1) {
+                        let cat = c.parent.split("/");
+                        let catName = "**" + cat[cat.length-2].toUpperCase() + "**";
+
+                        embed.addField("\u200b", catName);
+                        currentCategories.push(c.parent);
+                    }
+                }
+                embed.addField(v, c.description || "Description", true); 
+            }
         }
         
         await message.reply({ embeds: [ embed ] });

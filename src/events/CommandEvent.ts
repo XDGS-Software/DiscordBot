@@ -45,6 +45,7 @@ function loadCommands(dir) {
 				loadCommands(`${dir}/${file}/`);
 			} else {
 				const command = require(__dirname + `${dir}/${file}`);
+				command.parent = dir;
 				module.exports.commands.push(command);
 			}
 		}
