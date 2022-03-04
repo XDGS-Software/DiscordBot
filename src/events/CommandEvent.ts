@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Client, Message } from "discord.js";
 
 let fs = require('fs');
 let { prefix, command_cooldown, command_cooldown_reaction } = process.env;
@@ -16,16 +16,29 @@ async function cooldownIt(message: Message, name: string, ms: number, reaction: 
 	}else{await message.react(reaction||command_cooldown_reaction);}
 }
 
+const Enmap = require('enmap');
+const DB = new Enmap({
+    name: "db", 
+    fetchAll: false
+});
+
+const client: Client = require('./../index').bot;
+
 module.exports = {
 	commands: [],
 	name: 'messageCreate',
 	once: false,
+	DB,
 	async execute(message: Message) {
 		if (message.author.bot) return;
-		if (!message.content.startsWith(prefix)) return;
+		
+		let prefixNew = module.exports.DB.get(`${message.guild.id}-prefix`) || prefix;
+
+		if (!message.content.startsWith(prefixNew) && !message.mentions.has(client.user)) return;
 
 		let args = message.content.split(" ");
-		let command = args.shift().replace(prefix, "");
+		if (message.mentions.has(client.user)) args = args.splice(1);
+		let command = args.shift().replace(prefixNew, "");
 
 		let cmds = module.exports.commands.filter((value) => { return value.name.match(command); });
 

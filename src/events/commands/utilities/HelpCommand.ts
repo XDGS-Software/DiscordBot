@@ -7,11 +7,14 @@ function toHexColorString(hex: string) : HexColorString {
 }
 
 let CommandEvent = require('../../CommandEvent');
+let DB = CommandEvent.DB;
 
 module.exports = {
     name: "help",
     description: "a command that shows a list of commands",
     async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
+        prefix = DB.get(`${message.guild.id}-prefix`) || process.env['prefix'];
+
         let commandNames = CommandEvent.commands.map((value) => { 
             return prefix + value.name
             .replaceAll("(", "")

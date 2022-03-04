@@ -9,29 +9,27 @@ function toHexColorString(hex: string) : HexColorString {
     return `#${hex.replace("#", "")}`;
 }
 
-const Enmap = require('enmap');
-const DB = new Enmap({
-    name: "db", 
-    fetchAll: false
-});
-
-let t = DB.get('tags');
-if (t !== undefined) {
-    tags = t;
-}
+const DB = require('../../CommandEvent').DB;
 
 module.exports = {
     name: "(tag|tags)",
     arguments: ["(create <tag> <description>/delete <tag>/refresh)"],
     description: "create, view, delete, refresh tags",
     async execute(message: Message, command: string, args: string[], cooldownIt: Function) {
+        prefix = DB.get(`${message.guild.id}-prefix`) || process.env['prefix'];
+
+        let t = DB.get(`${message.guild.id}-tags`);
+        if (t !== undefined) {
+            tags = t;
+        }
+
         switch (command) {
             case "tag":
                 if (args.length > 0) {
                     if (args[0] == "refresh") {
                         if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
 
-                        let t = DB.get('tags');
+                        let t = DB.get(`${message.guild.id}-tags`);
                         if (t !== undefined) {
                             tags = t;
                         }
@@ -49,7 +47,7 @@ module.exports = {
                             }
 
                             tags = tags.filter((value) => value.name !== tagName);
-                            await DB.set('tags', tags);
+                            await DB.set(`${message.guild.id}-tags`, tags);
 
                             await message.reply(`Tag ${tagName} deleted`);
                             break;
@@ -82,10 +80,10 @@ module.exports = {
                                     newTag.description = tagDescription;
                                     tags.push(newTag);
 
-                                    if (await DB.get('tags') == undefined) {
-                                        DB.set('tags', tags);
+                                    if (await DB.get(`${message.guild.id}-tags`) == undefined) {
+                                        DB.set(`${message.guild.id}-tags`, tags);
                                     } else {
-                                        await DB.set('tags', tags);
+                                        await DB.set(`${message.guild.id}-tags`, tags);
                                     }
 
                                     await message.reply(`Tag created with name ${newTag.name}`);
@@ -120,6 +118,11 @@ module.exports = {
                         });
                     }
                 } else {
+                    let t = DB.get(`${message.guild.id}-tags`);
+                    if (t !== undefined) {
+                        tags = t;
+                    }
+
                     await cooldownIt(message, 'tagCommandCooldown', null, null, async () => {
                         await message.reply(`${prefix}tag (${
                         tags.map((value) => "**"+value.name+"**").join("|")}${
@@ -129,6 +132,11 @@ module.exports = {
                 }
                 break;
             case "tags":
+                let t = DB.get(`${message.guild.id}-tags`);
+                if (t !== undefined) {
+                    tags = t;
+                }
+
                 await cooldownIt(message, 'tagCommandCooldown', null, null, async () => {
                     await message.reply("tags: " + tags.filter((value) => args.length == 0 || 
                     (args.length > 0 && value.name.includes(args[0]))).map((value) => value.name).join(', '));

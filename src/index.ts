@@ -24,6 +24,8 @@ let bot: Client = new Client({
     ]
 });
 
+module.exports.bot = bot;
+
 function toPresenceStatus(status: string) : ClientPresenceStatus {
     return status == 'online' ? 
         'online' : status == 'dnd' ?
