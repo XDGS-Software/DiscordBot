@@ -103,32 +103,36 @@ module.exports = {
                             break;
                         }
                     } else {
-                        let tagL: typeof Tag[] = tags.filter((value) => value.name == args[0]);
-                        if (tagL.length > 0) {
-                            let tag: typeof Tag = tagL[0];
-                            let embed = new MessageEmbed()
-                                .setFooter({ 
-                                    text: `Requested by ${message.author.tag}`, 
-                                    iconURL: message.author.avatarURL() 
-                                })
-                                .setColor(toHexColorString(embed_color))
-                                .setTitle(tag.name)
-                                .setDescription(tag.description);
-                            await message.reply({ embeds: [ embed ] });
-                            break;
-                        }
+                        await cooldownIt(message, 'tagGetCooldown', null, null, async () => {
+                            let tagL: typeof Tag[] = tags.filter((value) => value.name == args[0]);
+                            if (tagL.length > 0) {
+                                let tag: typeof Tag = tagL[0];
+                                let embed = new MessageEmbed()
+                                    .setFooter({ 
+                                        text: `Requested by ${message.author.tag}`, 
+                                        iconURL: message.author.avatarURL() 
+                                    })
+                                    .setColor(toHexColorString(embed_color))
+                                    .setTitle(tag.name)
+                                    .setDescription(tag.description);
+                                await message.reply({ embeds: [ embed ] });
+                            }
+                        });
                     }
                 } else {
-                    await message.reply(`${prefix}tag (${
+                    await cooldownIt(message, 'tagCommandCooldown', null, null, async () => {
+                        await message.reply(`${prefix}tag (${
                         tags.map((value) => "**"+value.name+"**").join("|")}${
                             message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ?
                             (tags.length > 0 ? "|" : "") + "create <tag> <description>|delete <tag>|refresh" : ""})`);
-                    break;
+                    });
                 }
                 break;
             case "tags":
-                await message.reply("tags: " + tags.filter((value) => args.length == 0 || 
-                (args.length > 0 && value.name.includes(args[0]))).map((value) => value.name).join(', '));
+                await cooldownIt(message, 'tagCommandCooldown', null, null, async () => {
+                    await message.reply("tags: " + tags.filter((value) => args.length == 0 || 
+                    (args.length > 0 && value.name.includes(args[0]))).map((value) => value.name).join(', '));
+                });
                 break;
             default:
                 break;
